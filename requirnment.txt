@@ -1,0 +1,14 @@
+llama-index-postprocessor-cohere-rerank
+llama-index-vector-stores-pinecone
+llama-index-embeddings-cohere
+python-docx
+pypdf
+langchain-community
+pinecone
+pyngrok
+flask
+streamlit
+cohere
+langchain-community
+langchain-cohere
+tiktoken
