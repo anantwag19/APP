@@ -1,0 +1,59 @@
+[
+  {
+    "question": "How many years of total professional experience does Anant Waghmare have?",
+    "contexts": [
+      "Over all 17+ years of experience including Outbound Product Management, Development, Consulting, Support, and Testing."
+    ],
+    "ground_truth": ["17+ years"]
+  },
+  {
+    "question": "Which university awarded Anant Waghmare his Executive MBA?",
+    "contexts": [
+      "Completed Executive master’s in business administration in Information Systems from Manipal University Bangalore (India) 2011."
+    ],
+    "ground_truth": ["Manipal University Bangalore"]
+  },
+  {
+    "question": "What is Anant Waghmare’s current role at Oracle India?",
+    "contexts": [
+      "Working in Oracle India from Oct 2013 — Technical Architect Lead – Present Date."
+    ],
+    "ground_truth": ["Technical Architect Lead"]
+  },
+  {
+    "question": "Name two large language models Anant has worked with according to the résumé.",
+    "contexts": [
+      "Conducted hands-on research and development on Large Language Models (LLMs) including GPT-3.5, GPT-4, LLaMA2, Mistral, and custom fine-tuned versions for domain-specific tasks."
+    ],
+    "ground_truth": ["GPT‑4", "LLaMA2"]
+  },
+  {
+    "question": "Which certification related to Oracle Cloud AI does Anant hold?",
+    "contexts": [
+      "Certified as Oracle Cloud AI Certified Professional & Foundations, Oracle Integration Cloud and SAAS , OCI Infra Architect, Multi Cloud Architect Associate."
+    ],
+    "ground_truth": ["Oracle Cloud AI Certified Professional & Foundations"]
+  },
+  {
+    "question": "What database is mentioned in Anant’s RAG pipeline experience?",
+    "contexts": [
+      "Engineered RAG (Retrieval Augmented Generation) pipelines combining Cohere LLMs and vector database Oracle 23 AI with hybrid Search Capability."
+    ],
+    "ground_truth": ["Oracle 23 AI"]
+  },
+  {
+    "question": "Which machine‑learning experiment manager did Anant establish pipelines with?",
+    "contexts": [
+      "Established robust MLOps pipelines using MLflow for experiment tracking, model registry, and lifecycle management."
+    ],
+    "ground_truth": ["MLflow"]
+  },
+  {
+    "question": "For which shipping company did Anant act as Integration Lead?",
+    "contexts": [
+      "ZIM Integrated Shipping Services Ltd. is an Israeli shipping company.",
+      "As the Integration Lead for Oracle Integration Cloud (OIC), accountable for the end-to-end delivery of integrating Legacy Systems of company with Oracle Fusion."
+    ],
+    "ground_truth": ["ZIM Integrated Shipping Services Ltd."]
+  }
+]

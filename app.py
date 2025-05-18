@@ -4,7 +4,7 @@ import requests
 # Function to get response from the API
 def get_api_response(user_input):
     try:
-        response = requests.post('https://4163-27-4-56-158.ngrok-free.app/query', json={'query': user_input})
+        response = requests.post('https://70c4-27-4-56-158.ngrok-free.app/query', json={'query': user_input})
         response.raise_for_status()
         return response.json().get('answer')
     except requests.exceptions.RequestException as e:
@@ -13,7 +13,7 @@ def get_api_response(user_input):
 # Function to upload file to the API
 def upload_file_to_api(uploaded_file):
     try:
-        upload_url = 'https://4163-27-4-56-158.ngrok-free.app/upload'
+        upload_url = 'https://70c4-27-4-56-158.ngrok-free.app/upload'
         files = {'file': uploaded_file}
         response = requests.post(upload_url, files=files)
         response.raise_for_status()
@@ -25,7 +25,7 @@ def upload_file_to_api(uploaded_file):
 def call_ingestion_service(filename):
     try:
         print(filename)
-        ingestion_url = 'https://4163-27-4-56-158.ngrok-free.app/ingestion'
+        ingestion_url = 'https://70c4-27-4-56-158.ngrok-free.app/ingestion'
         response = requests.post(ingestion_url, json={'filename': filename})
         response.raise_for_status()
         return response.json().get('message', 'Ingestion successful.')

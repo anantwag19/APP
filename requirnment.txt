@@ -12,3 +12,6 @@ cohere
 langchain-community
 langchain-cohere
 tiktoken
+ragas
+llama-cpp-python
+tabulate
