@@ -55,5 +55,75 @@
       "As the Integration Lead for Oracle Integration Cloud (OIC), accountable for the end-to-end delivery of integrating Legacy Systems of company with Oracle Fusion."
     ],
     "ground_truth": ["ZIM Integrated Shipping Services Ltd."]
+  },
+    {
+    "question": "What is the integration ID used for syncing EDMCS GEAC HCM Fund Number data?",
+    "contexts": [
+      "Integration Id Description INT_IB_EDMCS_1 EDMCS GEAC HCM Fund Number"
+    ],
+    "ground_truth": ["INT_IB_EDMCS_1"]
+  },
+  {
+    "question": "Which service is used to send email notifications for integration errors?",
+    "contexts": [
+      "HFWK_DATASYNC_NOTIFICATION_SERVICE – This service is used to send emails to the user groups that is configured in metadata."
+    ],
+    "ground_truth": ["HFWK_DATASYNC_NOTIFICATION_SERVICE"]
+  },
+  {
+    "question": "What is the name of the outbound bucket used in the PROD environment?",
+    "contexts": [
+      "Bucket Name Description OIC_PROD_OUTBOUND Buckets used for outbound integrations in PaaS PROD environment"
+    ],
+    "ground_truth": ["OIC_PROD_OUTBOUND"]
+  },
+  {
+    "question": "Which PGP key is used for encryption in the PROD environment?",
+    "contexts": [
+      "Encryption Details Description PGP Key PGP key used for encryption. PROD: MSHS_CFT_PGP_PUBLIC"
+    ],
+    "ground_truth": ["MSHS_CFT_PGP_PUBLIC"]
+  },
+  {
+    "question": "What is the name of the SaaS Extract used for Custom Payroll Interface?",
+    "contexts": [
+      "HCM Extract Name: MSHS_CUSTOM_PAYROLL_EXT"
+    ],
+    "ground_truth": ["MSHS_CUSTOM_PAYROLL_EXT"]
+  },
+  {
+    "question": "What tool is used for decrypting files in the SFTP folders?",
+    "contexts": [
+      "PGP Decryption key will be used to decrypt files in the folder. Utility provided by Oracle can be used."
+    ],
+    "ground_truth": ["Oracle decryption utility"]
+  },
+  {
+    "question": "Where are failed payloads archived in the integration process?",
+    "contexts": [
+      "The failed payloads are stored in OIC object storage in case of error archive mechanism."
+    ],
+    "ground_truth": ["OIC object storage"]
+  },
+  {
+    "question": "What protocol is used to transfer files to the Secure File Transfer location?",
+    "contexts": [
+      "Files are transferred to the SFTP location configured for the external vendors."
+    ],
+    "ground_truth": ["SFTP"]
+  },
+  {
+    "question": "What is the scheduling mechanism for the outbound custom payroll job?",
+    "contexts": [
+      "This process will be scheduled to run every bi-weekly cycle for Payroll outbound integration."
+    ],
+    "ground_truth": ["Bi-weekly schedule"]
+  },
+  {
+    "question": "Which Oracle Cloud service is used to build these integrations?",
+    "contexts": [
+      "Oracle Integration Cloud (OIC) is used to build these integrations."
+    ],
+    "ground_truth": ["Oracle Integration Cloud"]
   }
 ]

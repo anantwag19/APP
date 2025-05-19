@@ -7,7 +7,7 @@ from typing import Optional
 # =================================================================
 # 1. CONFIGURATION (Update with your ngrok URL)
 # =================================================================
-API_BASE_URL = "https://1fc9-27-4-56-158.ngrok-free.app"  # Replace with your ngrok URL
+API_BASE_URL = "https://8254-27-4-56-158.ngrok-free.app"  # Replace with your ngrok URL
 ENDPOINTS = {
     "query": "/query",
     "query_stream": "/query_stream",

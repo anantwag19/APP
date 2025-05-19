@@ -247,65 +247,106 @@ def start_ingestion():
     except Exception as e:
         print(f"[ERROR] Ingestion failed: {str(e)}")
         return jsonify({'error': str(e)}), 500
+    
+ 
+
 @app.route('/query_stream', methods=['POST'])
 def query_stream():
     try:
-        print("\n[DEBUG] Starting /query_stream")
+        print("\n=== [DEBUG] STARTING QUERY STREAM ===")
         query = request.json.get('query')
         if not query:
             raise ValueError("Empty query")
 
-        print(f"[DEBUG] Processing query: {query[:50]}...")
+        print(f"\n📩 QUERY RECEIVED: {query}")
 
-        # 1. Retrieve contexts
+        # 1. Retrieve and Rerank Contexts
         try:
+            print("\n🔍 STEP 1: RETRIEVING FROM PINECONE")
             query_embed = co.embed(texts=[query], model="embed-english-v3.0", input_type="search_query").embeddings[0]
             index = initialize_pinecone()
             pinecone_results = index.query(vector=query_embed, top_k=10, include_metadata=True)
+            
+            # Print raw Pinecone results
+            print("\n📦 RAW PINECONE RESULTS (BEFORE RERANKING):")
+            for i, match in enumerate(pinecone_results.matches):
+                print(f"\n🔹 RESULT {i+1}:")
+                print(f"   ID: {match.id}")
+                print(f"   Score: {match.score:.3f}")
+                print(f"   Text: {match.metadata['text'][:150]}...")
+
             candidate_docs = [m.metadata['text'] for m in pinecone_results.matches]
-            rerank_results = co.rerank(query=query, documents=candidate_docs, top_n=3, model="rerank-english-v3.0")
+            
+            print("\n⚖️ STEP 2: RERANKING WITH COHERE")
+            rerank_results = co.rerank(query=query, documents=candidate_docs, top_n=2, model="rerank-english-v3.0")
+            
+            # Print reranking results
+            print("\n🎯 RERANKING RESULTS:")
+            for i, result in enumerate(rerank_results.results):
+                print(f"\n🏅 RANK {i+1}:")
+                print(f"   Original Index: {result.index}")
+                print(f"   Relevance Score: {result.relevance_score:.3f}")
+                print(f"   Text: {candidate_docs[result.index][:150]}...")
+
             contexts = [candidate_docs[r.index] for r in rerank_results.results]
-            print(f"[DEBUG] Retrieved {len(contexts)} contexts")
+            
+            # Print final contexts being sent to Cohere
+            print("\n🚀 FINAL CONTEXTS SENT TO COHERE CHAT MODEL:")
+            for i, ctx in enumerate(contexts):
+                print(f"\n📜 CONTEXT {i+1} ({len(ctx.split())} words):")
+                print(f"{ctx[:200]}...")
+
         except Exception as retrieval_error:
-            print(f"[ERROR] Retrieval failed: {str(retrieval_error)}")
+            print(f"\n❌ RETRIEVAL ERROR: {str(retrieval_error)}")
             raise
 
-        # 2. Stream answer
+        # 2. Stream answer with evaluation
         def generate():
-            print("[DEBUG] Starting generator")
             full_answer = []
+            
+            if not contexts:
+                print("\n⚠️ NO CONTEXTS FOUND FOR QUERY")
+                yield f"data: {json.dumps({'type': 'error', 'message': 'No relevant contexts found'})}\n\n"
+                return
+
             try:
+                # Print the exact prompt being sent to Cohere
+                cohere_prompt = f"Answer strictly from these contexts:\n\n{contexts}\n\nQuestion: {query}"
+                print("\n💬 COHERE PROMPT BEING SENT:")
+                print(cohere_prompt[:500] + "...")
+
                 cohere_stream = co.chat_stream(
-                    message=query,
+                    message=cohere_prompt,
                     documents=[{"text": c} for c in contexts],
                     model="command",
-                    temperature=0.3
+                    temperature=0.1,
+                    preamble="""preamble = "Answer from these contexts only. If unsure, say 'Not in documents'.""."""
                 )
-                print("[DEBUG] Created Cohere stream")
 
-                # Stream words
                 for event in cohere_stream:
-                    print(f"[DEBUG] Received event: {event.event_type}")
                     if event.event_type == "text-generation":
                         chunk = event.text
-                        print(f"[DEBUG] Yielding chunk: {chunk[:20]}...")
                         full_answer.append(chunk)
                         yield f"data: {json.dumps({'type': 'chunk', 'text': chunk})}\n\n"
 
-                # Evaluation phase
                 full_answer_str = "".join(full_answer)
-                print(f"[DEBUG] Full answer: {full_answer_str[:50]}...")
-                try:
-                    evaluation = evaluate_response(query, contexts, full_answer_str)
-                    print("[DEBUG] Evaluation completed")
-                    yield f"data: {json.dumps({'type': 'eval', 'metrics': evaluation})}\n\n"
-                except Exception as eval_error:
-                    print(f"[ERROR] Evaluation failed: {str(eval_error)}")
-                    yield f"data: {json.dumps({'type': 'error', 'message': 'Evaluation failed'})}\n\n"
+                print("\n🤖 FINAL ANSWER GENERATED:")
+                print(full_answer_str)
 
-            except Exception as stream_error:
-                print(f"[ERROR] Streaming failed: {str(stream_error)}")
-                yield f"data: {json.dumps({'type': 'error', 'message': 'Streaming failed'})}\n\n"
+                evaluation = evaluate_response(query, contexts, full_answer_str)
+                
+                # Print evaluation results
+                print("\n🧐 EVALUATION RESULTS:")
+                print(f"Relevance: {evaluation['relevance']}")
+                print(f"Grounding: {evaluation['grounding']}")
+                print(f"Usefulness: {evaluation['usefulness']}")
+                
+                yield f"data: {json.dumps({'type': 'evaluation', 'data': evaluation})}\n\n"
+                yield "data: [DONE]\n\n"
+
+            except Exception as generation_error:
+                print(f"\n❌ GENERATION ERROR: {str(generation_error)}")
+                yield f"data: {json.dumps({'type': 'error', 'message': str(generation_error)})}\n\n"
 
         return Response(
             stream_with_context(generate()),
@@ -313,12 +354,12 @@ def query_stream():
             headers={
                 "Cache-Control": "no-cache",
                 "Connection": "keep-alive",
-                "X-Accel-Buffering": "no"  # Important for some proxies
+                "X-Accel-Buffering": "no"
             }
         )
 
     except Exception as e:
-        print(f"[ERROR] Endpoint failed: {str(e)}")
+        print(f"\n❌ ENDPOINT ERROR: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/query', methods=['POST'])

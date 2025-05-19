@@ -8,3 +8,5 @@ you just need to stat  this srever wuth :
 
 Also to run the streamlit app : ============> python -m streamlit run app.py
 RAG_EVALAUATION.py is taking care of Evalauation .. using RAGAS and uses mistral model for getting details of matrix created .
+
+Also we have now app_Streaming.py which takes care of the Streaming response .. its wow exp .
